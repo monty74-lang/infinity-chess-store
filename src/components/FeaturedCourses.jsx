@@ -46,8 +46,8 @@ function FeaturedCourses() {
               className="cursor-pointer overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-xl"
             >
               <div className="flex h-36 items-center justify-center bg-gradient-to-br from-amber-500 to-amber-700 sm:h-40">
-  <span className="text-5xl sm:text-7xl">♟</span>
-</div>
+                <span className="text-5xl sm:text-7xl">♟</span>
+              </div>
 
               <div className="p-6 sm:p-8">
                 <h3 className="text-2xl font-bold sm:text-3xl">
@@ -59,8 +59,8 @@ function FeaturedCourses() {
                 </p>
 
                 <button className="mt-8 w-full rounded-xl bg-amber-400 py-3 text-base font-bold text-black transition hover:scale-105 sm:py-4 sm:text-lg">
-  Explore →
-</button>
+                  Explore →
+                </button>
               </div>
             </motion.div>
           ))}

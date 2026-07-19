@@ -58,25 +58,25 @@ function Hero() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
-            <h2 className="text-4xl font-bold text-amber-400">
-              ₹999
-            </h2>
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 transition duration-300 hover:-translate-y-1 hover:border-amber-400">
+  <h2 className="text-4xl font-bold text-amber-400">
+    Starting at ₹299
+  </h2>
 
-            <p className="mt-2 text-slate-400">
-              One-Time Payment
-            </p>
-          </div>
+  <p className="mt-2 text-slate-400">
+    Affordable Prices
+  </p>
+</div>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
-            <h2 className="text-4xl font-bold text-amber-400">
-              24/7
-            </h2>
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 transition duration-300 hover:-translate-y-1 hover:border-amber-400">
+  <h2 className="text-4xl font-bold text-amber-400">
+    24/7
+  </h2>
 
-            <p className="mt-2 text-slate-400">
-              Telegram Support
-            </p>
-          </div>
+  <p className="mt-2 text-slate-400">
+    Telegram Support
+  </p>
+</div>
 
         </div>
 

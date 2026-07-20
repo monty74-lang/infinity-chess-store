@@ -1,9 +1,16 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import courses from "../data/courses";
+import { useEffect, useState } from "react";
 
 function CourseList({ category, search, sort }) {
-    const [visibleCourses, setVisibleCourses] = useState(20);
+    const [courses, setCourses] = useState([]);
+const [visibleCourses, setVisibleCourses] = useState(20);
+
+useEffect(() => {
+  fetch("http://localhost:5000/api/courses")
+    .then((res) => res.json())
+    .then((data) => setCourses(data))
+    .catch((err) => console.error(err));
+}, []);
   const filteredCourses = courses.filter(
     (course) =>
       course.category === category &&

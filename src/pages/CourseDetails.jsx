@@ -1,15 +1,127 @@
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import TelegramButton from "../components/TelegramButton";
-import courses from "../data/courses";
 
 function CourseDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const course = courses.find((c) => c.id === Number(id));
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!course) {
+  useEffect(() => {
+    async function fetchCourse() {
+      try {
+        const response = await fetch(
+          `https://infinity-chess-store-backend.onrender.com/api/courses/${id}`
+        );
+
+        const data = await response.json();
+
+        setCourse(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCourse();
+  }, [id]);
+
+  const handleWebsitePurchase = async () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Please login first.");
+    navigate("/login");
+    return;
+  }
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  try {
+    const response = await fetch(
+      "https://infinity-chess-store-backend.onrender.com/api/payment/create-order",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          amount: course.price,
+        }),
+      }
+    );
+
+    const order = await response.json();
+
+    const options = {
+      key: "YOUR_RAZORPAY_KEY_ID",
+      amount: order.amount,
+      currency: order.currency,
+      name: "Infinity Chess Store",
+      description: course.title,
+      order_id: order.id,
+
+      handler: async function (response) {
+        const verify = await fetch(
+          "https://infinity-chess-store-backend.onrender.com/api/payment/verify-payment",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              userId: user.id,
+              courseId: course._id,
+              amount: course.price,
+            }),
+          }
+        );
+
+        const data = await verify.json();
+
+        alert(data.message);
+
+        if (data.message === "Payment Successful") {
+          navigate("/my-courses");
+        }
+      },
+
+      theme: {
+        color: "#facc15",
+      },
+    };
+
+    const razorpay = new window.Razorpay(options);
+    razorpay.open();
+
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong");
+  }
+};
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white">
+        <Navbar />
+        <div className="flex h-[70vh] items-center justify-center">
+          <h1 className="text-4xl font-bold">Loading...</h1>
+        </div>
+      </div>
+    );
+  }
+
+  if (!course || course.message) {
     return (
       <div className="min-h-screen bg-slate-950 text-white">
         <Navbar />
@@ -52,7 +164,7 @@ function CourseDetails() {
             <li>✅ Lifetime Access</li>
             <li>✅ One-Time Payment</li>
             <li>✅ Premium Chess Course</li>
-            <li>✅ Telegram Purchase Support</li>
+            <li>✅ Telegram Support</li>
           </ul>
 
         </div>
@@ -64,20 +176,31 @@ function CourseDetails() {
           </h2>
 
           <p className="mt-4 text-slate-400">
-            Contact us on Telegram to purchase this course.
+            Buy instantly through our website or contact us directly on Telegram.
           </p>
+
+          <button
+            onClick={handleWebsitePurchase}
+            className="mt-8 w-full rounded-xl bg-amber-400 px-8 py-4 font-bold text-black transition hover:bg-amber-300 sm:w-auto"
+          >
+            Buy on Website
+          </button>
+
+          <div className="my-6 text-slate-500 font-semibold">
+            OR
+          </div>
 
           <a
             href="https://t.me/Yabuki_Joe19"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-block w-full rounded-xl bg-sky-500 px-8 py-4 text-center font-bold text-white transition hover:bg-sky-400 sm:w-auto"
+            className="inline-block w-full rounded-xl bg-sky-500 px-8 py-4 text-center font-bold text-white transition hover:bg-sky-400 sm:w-auto"
           >
-            Buy Now via Telegram
+            Buy via Telegram
           </a>
 
-          <p className="mt-4 text-sm text-slate-500">
-            Secure one-time payment • No subscription required
+          <p className="mt-5 text-sm text-slate-500">
+            Secure one-time payment • Lifetime access
           </p>
 
         </div>

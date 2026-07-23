@@ -2,15 +2,23 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function CourseList({ category, search, sort }) {
-    const [courses, setCourses] = useState([]);
-const [visibleCourses, setVisibleCourses] = useState(20);
+  const [courses, setCourses] = useState([]);
+  const [visibleCourses, setVisibleCourses] = useState(20);
 
-useEffect(() => {
-  fetch("http://localhost:5000/api/courses")
-    .then((res) => res.json())
-    .then((data) => setCourses(data))
-    .catch((err) => console.error(err));
-}, []);
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const response = await fetch("https://infinity-chess-store-backend.onrender.com/api/courses");
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    }
+
+    fetchCourses();
+  }, []);
+
   const filteredCourses = courses.filter(
     (course) =>
       course.category === category &&
@@ -48,7 +56,7 @@ useEffect(() => {
                 </span>
               </div>
 
-             <div className="text-left sm:text-right">
+              <div className="text-left sm:text-right">
                 <h2 className="text-3xl font-bold text-amber-400 sm:text-4xl">
                   ₹{course.price}
                 </h2>
@@ -63,16 +71,18 @@ useEffect(() => {
             </div>
           </div>
         ))}
-{visibleCourses < sortedCourses.length && (
-  <div className="mt-10 text-center">
-    <button
-      onClick={() => setVisibleCourses((prev) => prev + 20)}
-      className="rounded-xl bg-amber-400 px-8 py-4 font-bold text-black transition hover:scale-105"
-    >
-      Load More
-    </button>
-  </div>
-)}
+
+        {visibleCourses < sortedCourses.length && (
+          <div className="mt-10 text-center">
+            <button
+              onClick={() => setVisibleCourses((prev) => prev + 20)}
+              className="rounded-xl bg-amber-400 px-8 py-4 font-bold text-black transition hover:scale-105"
+            >
+              Load More
+            </button>
+          </div>
+        )}
+
         {sortedCourses.length === 0 && (
           <div className="rounded-xl bg-slate-900 p-6 text-center text-slate-400">
             No courses found.

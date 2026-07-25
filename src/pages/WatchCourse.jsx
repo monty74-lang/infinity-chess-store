@@ -178,7 +178,7 @@ const markChapterComplete = async () => {
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white">
+      <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
         <Navbar />
 
         <div className="flex h-[80vh] flex-col items-center justify-center">
@@ -195,12 +195,24 @@ const markChapterComplete = async () => {
       </div>
     );
   }
+console.log(progress.length, chapters.length);
+console.log("Progress:", progress.length);
+console.log("Chapters:", chapters.length);
+ const progressPercentage = Math.min(
+  100,
+  Math.max(
+    0,
+    chapters.length
+      ? (progress.length / chapters.length) * 100
+      : 0
+  )
+);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <Navbar />
 
-      <div className="mx-auto max-w-5xl px-6 py-16">
+      <div className="mx-auto max-w-7xl px-6 py-16">
 
         <h1 className="text-5xl font-bold text-amber-400">
           Watch Course
@@ -220,15 +232,11 @@ const markChapterComplete = async () => {
   <div className="mt-2 h-3 rounded-full bg-slate-800">
 
     <div
-      className="h-3 rounded-full bg-green-500 transition-all duration-500"
-      style={{
-        width: `${
-          chapters.length
-            ? (progress.length / chapters.length) * 100
-            : 0
-        }%`,
-      }}
-    />
+  className="h-3 rounded-full bg-green-500 transition-all duration-500"
+  style={{
+    width: `${progressPercentage}%`,
+  }}
+/>
 
   </div>
 
